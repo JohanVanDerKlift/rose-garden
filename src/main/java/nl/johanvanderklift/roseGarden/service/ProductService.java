@@ -2,7 +2,7 @@ package nl.johanvanderklift.roseGarden.service;
 
 import nl.johanvanderklift.roseGarden.dto.ProductInputDto;
 import nl.johanvanderklift.roseGarden.dto.ProductOutputDto;
-import nl.johanvanderklift.roseGarden.entity.Product;
+import nl.johanvanderklift.roseGarden.model.Product;
 import nl.johanvanderklift.roseGarden.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 

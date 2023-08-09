@@ -1,4 +1,4 @@
-package nl.johanvanderklift.roseGarden.entity;
+package nl.johanvanderklift.roseGarden.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;

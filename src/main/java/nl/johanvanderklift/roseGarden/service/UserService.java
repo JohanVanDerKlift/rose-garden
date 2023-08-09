@@ -1,11 +1,15 @@
 package nl.johanvanderklift.roseGarden.service;
 
+import nl.johanvanderklift.roseGarden.dto.AddressInputDto;
+import nl.johanvanderklift.roseGarden.dto.AddressOutputDto;
 import nl.johanvanderklift.roseGarden.dto.UserInputDto;
 import nl.johanvanderklift.roseGarden.dto.UserOutputDto;
-import nl.johanvanderklift.roseGarden.entity.Authority;
-import nl.johanvanderklift.roseGarden.entity.User;
+import nl.johanvanderklift.roseGarden.model.Address;
+import nl.johanvanderklift.roseGarden.model.Authority;
+import nl.johanvanderklift.roseGarden.model.User;
 import nl.johanvanderklift.roseGarden.exception.AuthorityNotFoundException;
 import nl.johanvanderklift.roseGarden.exception.UserNotFoundException;
+import nl.johanvanderklift.roseGarden.repository.AddressRepository;
 import nl.johanvanderklift.roseGarden.repository.AuthorityRepository;
 import nl.johanvanderklift.roseGarden.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,11 +24,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final AuthorityRepository authorityRepository;
+    private final AddressRepository addressRepository;
     private final PasswordEncoder encoder;
 
-    public UserService(UserRepository userRepository, AuthorityRepository authorityRepository, PasswordEncoder encoder) {
+    public UserService(UserRepository userRepository, AuthorityRepository authorityRepository, AddressRepository addressRepository, PasswordEncoder encoder) {
         this.userRepository = userRepository;
         this.authorityRepository = authorityRepository;
+        this.addressRepository = addressRepository;
         this.encoder = encoder;
     }
 
@@ -36,10 +42,10 @@ public class UserService {
         return dtos;
     }
 
-    public UserOutputDto getUserByEmail(String email) {
-        Optional<User> opUser = userRepository.findById(email);
+    public UserOutputDto getUserByUsername(String username) {
+        Optional<User> opUser = userRepository.findById(username);
         if (opUser.isEmpty()) {
-            throw new UserNotFoundException(email);
+            throw new UserNotFoundException(username);
         } else {
             User user = opUser.get();
             return transferUserToDto(user);
@@ -49,14 +55,14 @@ public class UserService {
     public String createUser(UserInputDto dto) {
         User user = new User();
         userRepository.save(transferDtoToUser(dto, user));
-        return user.getEmail();
+        return user.getUsername();
     }
 
-    public void addAuthority(String email, String authority) {
-        Optional<User> opUser = userRepository.findById(email);
-        Optional<Authority> opAuthority = authorityRepository.findById(authority);
+    public void addAuthorityToUser(String username, String authority) {
+        Optional<User> opUser = userRepository.findById(username);
+        Optional<Authority> opAuthority = authorityRepository.findById("ROLE_" + authority);
         if (opUser.isEmpty()) {
-            throw new UserNotFoundException(email);
+            throw new UserNotFoundException(username);
         } if (opAuthority.isEmpty()) {
             throw new AuthorityNotFoundException(authority);
         } else {
@@ -67,11 +73,11 @@ public class UserService {
         }
     }
 
-    public void removeAuthority(String email, String authority) {
-        Optional<User> opUser = userRepository.findById(email);
+    public void removeAuthority(String username, String authority) {
+        Optional<User> opUser = userRepository.findById(username);
         Optional<Authority> opAuthority = authorityRepository.findById(authority);
         if (opUser.isEmpty()) {
-            throw new UserNotFoundException(email);
+            throw new UserNotFoundException(username);
         } if (opAuthority.isEmpty()) {
             throw new AuthorityNotFoundException(authority);
         } else {
@@ -82,9 +88,22 @@ public class UserService {
         }
     }
 
+    public Long addAddressToUser(AddressInputDto dto, User user) {
+        Address address = new Address();
+        address.setAddressLine1(dto.addressLine1);
+        address.setAddressLine2(dto.addressLine2);
+        address.setZipcode(dto.zipcode);
+        address.setCity(dto.city);
+        address.setUser(user);
+        addressRepository.save(address);
+        return address.getId();
+    }
+
     private UserOutputDto transferUserToDto(User user) {
         UserOutputDto dto = new UserOutputDto();
+        dto.username = user.getUsername();
         dto.email = user.getEmail();
+        dto.password = user.getPassword();
         dto.firstName = user.getFirstName();
         dto.lastName = user.getLastName();
         dto.companyName = user.getCompanyName();
@@ -95,13 +114,13 @@ public class UserService {
     }
 
     private User transferDtoToUser(UserInputDto dto, User user) {
+        user.setUsername(dto.username);
         user.setEmail(dto.email);
         user.setPassword(encoder.encode(dto.password));
         user.setFirstName(dto.firstName);
         user.setLastName(dto.lastName);
         user.setCompanyName(dto.companyName);
         user.setPhoneNumber(dto.phoneNumber);
-        user.setAuthorities(dto.authorities);
         return user;
     }
 }

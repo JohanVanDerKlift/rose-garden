@@ -1,7 +1,8 @@
 package nl.johanvanderklift.roseGarden.service;
 
 import nl.johanvanderklift.roseGarden.dto.UserOutputDto;
-import nl.johanvanderklift.roseGarden.entity.Authority;
+import nl.johanvanderklift.roseGarden.model.Authority;
+import nl.johanvanderklift.roseGarden.repository.AuthorityRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -17,21 +18,22 @@ import java.util.List;
 public class CustomUserDetailService implements UserDetailsService {
 
     private final UserService userService;
+    private final AuthorityRepository authorityRepository;
 
-    public CustomUserDetailService(UserService userService) {
+    public CustomUserDetailService(UserService userService, AuthorityRepository authorityRepository) {
         this.userService = userService;
+        this.authorityRepository = authorityRepository;
     }
 
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserOutputDto dto = userService.getUserByEmail(email);
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserOutputDto dto = userService.getUserByUsername(username);
         String password = dto.password;
-        List<Authority> authorities = dto.authorities;
         List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-        for (Authority authority : authorities) {
+        for (Authority authority : authorityRepository.findByUsers_Username(username)) {
             grantedAuthorities.add(new SimpleGrantedAuthority(authority.getAuthorityName()));
         }
-        return new User(email, password, grantedAuthorities);
+        return new User(username, password, grantedAuthorities);
     }
 }

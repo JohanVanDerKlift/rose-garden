@@ -1,4 +1,4 @@
-package nl.johanvanderklift.roseGarden.entity;
+package nl.johanvanderklift.roseGarden.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -27,7 +27,7 @@ public class Address {
     private String city;
 
     @ManyToOne
-    @JoinColumn(name = "user_email", nullable = false)
+    @JoinColumn(name = "username")
     private User user;
 
 }

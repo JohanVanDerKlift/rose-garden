@@ -5,7 +5,7 @@ public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException() {
     }
 
-    public UserNotFoundException(String email) {
-        super("The user with email " + email + " was not found in the database.");
+    public UserNotFoundException(String username) {
+        super("The user with username " + username + " was not found in the database.");
     }
 }

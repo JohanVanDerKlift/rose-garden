@@ -1,10 +1,11 @@
-package nl.johanvanderklift.roseGarden.entity;
+package nl.johanvanderklift.roseGarden.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Getter
@@ -13,11 +14,14 @@ import java.util.List;
 @Table(name = "users")
 public class User {
     @Id
-    @Column(name = "email", nullable = false)
-    private String email;
+    @Column(name = "username", nullable = false)
+    private String username;
 
     @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "email", nullable = false)
+    private String email;
 
     @Column(name = "first_name", nullable = false)
     private String firstName;
@@ -37,14 +41,16 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WebOrder> webOrders = new ArrayList<>();
 
+
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "users_authorities",
+            joinColumns = @JoinColumn(name = "username"),
+            inverseJoinColumns = @JoinColumn(name = "authority_name"))
+    private Collection<Authority> authorities = new ArrayList<>();
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Address> addresses = new ArrayList<>();
-
-    @ManyToMany
-    @JoinTable(name = "users_auhorities",
-            joinColumns = @JoinColumn(name = "user_email"),
-            inverseJoinColumns = @JoinColumn(name = "Authority_name"))
-    private List<Authority> authorities = new ArrayList<>();
 
     public void addAuthority(Authority authority) {
         this.authorities.add(authority);

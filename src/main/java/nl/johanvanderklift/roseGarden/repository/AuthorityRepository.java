@@ -1,7 +1,15 @@
 package nl.johanvanderklift.roseGarden.repository;
 
-import nl.johanvanderklift.roseGarden.entity.Authority;
-import org.springframework.data.repository.ListCrudRepository;
+import nl.johanvanderklift.roseGarden.model.Authority;
+import org.springframework.data.repository.CrudRepository;
 
-public interface AuthorityRepository extends ListCrudRepository<Authority, String> {
+import java.util.List;
+import java.util.Optional;
+
+
+public interface AuthorityRepository extends CrudRepository<Authority, String> {
+    List<Authority> findByUsers_Username(String username);
+
+
+
 }

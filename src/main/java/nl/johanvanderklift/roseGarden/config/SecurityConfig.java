@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -38,20 +39,28 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .httpBasic()
+                .csrf().disable()
+                .httpBasic().disable()
+                .cors()
                 .and()
                 .authorizeHttpRequests()
-                .requestMatchers(HttpMethod.POST, "/user").permitAll()
-                .requestMatchers(HttpMethod.GET, "/user/secret").hasRole("ADMIN")
-                .requestMatchers("/user/hello").permitAll()
+                // requestMatchers for user and authentication controller
+                .requestMatchers(HttpMethod.POST, "/authenticate", "/user").permitAll()
+                .requestMatchers(HttpMethod.POST, "/user/auth").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/user/address").authenticated()
+                .requestMatchers(HttpMethod.GET, "/user", "/user/search").hasRole("ADMIN")
+                .requestMatchers("/authenticated").authenticated()
+                .requestMatchers("/**").authenticated()
+                // RequestMatchers for product controller
+                .requestMatchers(HttpMethod.GET, "/product").permitAll()
+                .requestMatchers("/product").hasRole("ADMIN")
                 .anyRequest().denyAll()
                 .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .csrf().disable();
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         return http.build();
     }
-
 
 }
 

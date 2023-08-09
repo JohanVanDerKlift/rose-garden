@@ -4,12 +4,13 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
-import nl.johanvanderklift.roseGarden.entity.Authority;
 
 import java.util.List;
 
 public class UserInputDto {
-
+    @NotBlank
+    @NotNull
+    public String username;
     @NotBlank
     @NotNull
     @Email
@@ -31,6 +32,6 @@ public class UserInputDto {
     @NotBlank
     @NotNull
     public String phoneNumber;
-    public List<Authority> authorities;
+    public List<String> authorities;
 
 }
