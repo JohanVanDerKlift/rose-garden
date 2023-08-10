@@ -5,7 +5,6 @@ import nl.johanvanderklift.roseGarden.dto.AddressInputDto;
 import nl.johanvanderklift.roseGarden.dto.AddressOutputDto;
 import nl.johanvanderklift.roseGarden.dto.UserInputDto;
 import nl.johanvanderklift.roseGarden.dto.UserOutputDto;
-import nl.johanvanderklift.roseGarden.model.User;
 import nl.johanvanderklift.roseGarden.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

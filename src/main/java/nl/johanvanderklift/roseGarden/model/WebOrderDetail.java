@@ -22,4 +22,8 @@ public class WebOrderDetail {
     @JoinColumn(nullable = false)
     private Product product;
 
+    @ManyToOne
+    @JoinColumn(name = "web_order_id")
+    private WebOrder webOrder;
+
 }
