@@ -46,7 +46,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 // requestMatchers for user and authentication controller
                 .requestMatchers(HttpMethod.POST, "/authenticate", "/user").permitAll()
-                .requestMatchers(HttpMethod.POST, "/user/auth").hasRole("ADMIN")
+                .requestMatchers("/user/auth").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/user/address").authenticated()
                 .requestMatchers(HttpMethod.GET, "/user", "/user/search").hasRole("ADMIN")
                 .requestMatchers("/authenticated").authenticated()

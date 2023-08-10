@@ -12,6 +12,7 @@ import nl.johanvanderklift.roseGarden.exception.UserNotFoundException;
 import nl.johanvanderklift.roseGarden.repository.AddressRepository;
 import nl.johanvanderklift.roseGarden.repository.AuthorityRepository;
 import nl.johanvanderklift.roseGarden.repository.UserRepository;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -88,7 +89,22 @@ public class UserService {
         }
     }
 
-    public Long addAddressToUser(AddressInputDto dto, User user) {
+    public List<AddressOutputDto> getAllAddressesByUser(UserDetails userDetails) {
+        List<Address> addresses = addressRepository.findByUser_UsernameOrderByIdAsc(userDetails.getUsername());
+        List<AddressOutputDto> dtos = new ArrayList<>();
+        for (Address address: addresses) {
+            AddressOutputDto dto = new AddressOutputDto();
+            dto.addressLine1 = address.getAddressLine1();
+            dto.addressLine2 = address.getAddressLine2();
+            dto.city = address.getCity();
+            dto.zipcode = address.getZipcode();
+            dtos.add(dto);
+        }
+        return dtos;
+    }
+
+    public Long addAddressToUser(AddressInputDto dto, UserDetails userdetails) {
+        User user = userRepository.findById(userdetails.getUsername()).orElseThrow();
         Address address = new Address();
         address.setAddressLine1(dto.addressLine1);
         address.setAddressLine2(dto.addressLine2);

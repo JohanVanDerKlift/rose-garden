@@ -2,15 +2,15 @@ package nl.johanvanderklift.roseGarden.controller;
 
 import jakarta.validation.Valid;
 import nl.johanvanderklift.roseGarden.dto.AddressInputDto;
+import nl.johanvanderklift.roseGarden.dto.AddressOutputDto;
 import nl.johanvanderklift.roseGarden.dto.UserInputDto;
 import nl.johanvanderklift.roseGarden.dto.UserOutputDto;
 import nl.johanvanderklift.roseGarden.model.User;
 import nl.johanvanderklift.roseGarden.service.UserService;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -55,8 +55,19 @@ public class UserController {
         return ResponseEntity.ok().body(auth);
     }
 
+    @DeleteMapping("/auth")
+    public ResponseEntity<String> removeAuthorityFromUser(@RequestParam String auth, @RequestParam String username) {
+        userService.removeAuthority(username, auth);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/address")
+    public ResponseEntity<List<AddressOutputDto>> getAllAddressesByUser(@AuthenticationPrincipal UserDetails user) {
+        return ResponseEntity.ok(userService.getAllAddressesByUser(user));
+    }
+
     @PostMapping("/address")
-    public ResponseEntity<Long> AddAddressToUser(@Valid @RequestBody AddressInputDto dto, @AuthenticationPrincipal User user) {
+    public ResponseEntity<Long> AddAddressToUser(@Valid @RequestBody AddressInputDto dto, @AuthenticationPrincipal UserDetails user) {
         Long addressId = userService.addAddressToUser(dto, user);
         return ResponseEntity.ok(addressId);
     }
