@@ -9,6 +9,7 @@ import nl.johanvanderklift.roseGarden.repository.*;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -147,6 +148,7 @@ public class WebOrderService {
              }
              WebOrder webOrder = opWebOrder.get();
              webOrder.setAddress(address);
+             webOrder.setOrderDateTime(LocalDateTime.now());
              webOrder.setWebOrderStatus(WebOrderStatus.RECEIVED);
              webOrderRepository.save(webOrder);
              return webOrder.getId();
@@ -172,7 +174,12 @@ public class WebOrderService {
     }
 
     public void deleteWebOrder(Long id) {
-        webOrderRepository.deleteById(id);
+        Optional<WebOrder> opWebOrder = webOrderRepository.findById(id);
+        if (opWebOrder.isEmpty()) {
+            throw new WebOrderNotFoundException(id);
+        } else {
+            webOrderRepository.delete(opWebOrder.get());
+        }
     }
 
     private WebOrderOutputDto transferWebOrderToDto(WebOrder webOrder) {
