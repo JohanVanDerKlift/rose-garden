@@ -8,9 +8,13 @@ VALUES ('tester', 'testcompanyname', 'test@test.nl', 'testname', 'false', 'testl
 INSERT INTO users_authorities (username, authority_name)
 VALUES  ('tester', 'ROLE_USER'),
         ('tester2', 'ROLE_USER'),
-        ('tester2', 'ROLE_ADMIN');
+        ('tester', 'ROLE_ADMIN');
 
 INSERT INTO address (address_line_1, address_line_2, city, zipcode, username)
 VALUES ('Testerstreet 1', null, 'Testerton', '1234 AB', 'tester'),
        ('Test-square 10', null, 'Testerton', '9876 BA', 'tester'),
        ('Testerlane 2', 'Apartment A', 'Testcity', '4321 ZX', 'tester2');
+
+INSERT INTO product (id, availability, description, name, price, tax)
+VALUES ('1', 'true', 'Description of test product', 'Test product', '15.25', '21.0'),
+       ('2', 'true', 'Description of test2 product', 'Test2 product', '16.75', '9.0');

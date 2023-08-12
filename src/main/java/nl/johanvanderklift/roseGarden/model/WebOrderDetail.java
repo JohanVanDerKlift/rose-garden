@@ -1,5 +1,6 @@
 package nl.johanvanderklift.roseGarden.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,6 +23,7 @@ public class WebOrderDetail {
     @JoinColumn(nullable = false)
     private Product product;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "web_order_id")
     private WebOrder webOrder;

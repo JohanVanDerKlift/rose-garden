@@ -56,7 +56,9 @@ public class SecurityConfig {
                 .requestMatchers("/product").hasRole("ADMIN")
                 // RequestMatchers for weborder controller
                 .requestMatchers("/weborder").authenticated()
-                .requestMatchers(HttpMethod.POST, "/weborder/add").authenticated()
+                .requestMatchers("weborder/*").authenticated()
+                .requestMatchers("weborder/admin/*").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/weborder").hasRole("ADMIN")
                 .anyRequest().denyAll()
                 .and()
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)

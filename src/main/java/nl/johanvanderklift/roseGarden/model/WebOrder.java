@@ -32,4 +32,25 @@ public class WebOrder {
     @OneToMany(mappedBy = "webOrder", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WebOrderDetail> webOrderDetails = new ArrayList<>();
 
+    public Double getTax() {
+        double tax = 0.00;
+        for (WebOrderDetail webOrderDetail : this.webOrderDetails) {
+            tax += (webOrderDetail.getProduct().getPrice() * ((webOrderDetail.getProduct().getTax() / 100)))
+                    * webOrderDetail.getQuantity();
+        }
+        return tax;
+    }
+
+    public Double getTotalPrice() {
+        double totalPrice = 0.00;
+        for (WebOrderDetail webOrderDetail : webOrderDetails) {
+            totalPrice += webOrderDetail.getProduct().getPrice() * webOrderDetail.getQuantity();
+        }
+        return totalPrice;
+    }
+
+    public Double getTotalPriceExTax() {
+        return getTotalPrice() - getTax();
+    }
+
 }

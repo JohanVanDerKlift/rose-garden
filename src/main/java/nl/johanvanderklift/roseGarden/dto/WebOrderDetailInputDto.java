@@ -1,6 +1,6 @@
 package nl.johanvanderklift.roseGarden.dto;
 
-public class WebOrderDetailDto {
+public class WebOrderDetailInputDto {
 
     public Integer quantity;
     public Long productId;

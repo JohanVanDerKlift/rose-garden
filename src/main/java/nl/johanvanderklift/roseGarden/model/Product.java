@@ -1,5 +1,6 @@
 package nl.johanvanderklift.roseGarden.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -30,6 +31,7 @@ public class Product {
     @Column(name = "tax")
     private Double tax;
 
+    @JsonIgnore
     @OneToOne(mappedBy = "product", orphanRemoval = true)
     private WebOrderDetail webOrderDetail;
 
