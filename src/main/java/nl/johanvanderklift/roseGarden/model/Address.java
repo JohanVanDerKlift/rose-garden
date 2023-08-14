@@ -1,5 +1,6 @@
 package nl.johanvanderklift.roseGarden.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +27,7 @@ public class Address {
     @Column(name = "city", nullable = false)
     private String city;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "username")
     private User user;

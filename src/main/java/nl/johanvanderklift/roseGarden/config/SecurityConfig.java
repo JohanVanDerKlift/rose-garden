@@ -46,14 +46,20 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 // requestMatchers for user and authentication controller
                 .requestMatchers(HttpMethod.POST, "/authenticate", "/user").permitAll()
-                .requestMatchers("/user/auth").hasRole("ADMIN")
+                .requestMatchers("/user/auth", "/user/admin").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.POST, "/user/address").authenticated()
+                .requestMatchers(HttpMethod.PUT, "/user").authenticated()
+                .requestMatchers(HttpMethod.DELETE, "/user").authenticated()
                 .requestMatchers(HttpMethod.GET, "/user", "/user/search").hasRole("ADMIN")
                 .requestMatchers("/authenticated").authenticated()
                 .requestMatchers("/**").authenticated()
                 // RequestMatchers for product controller
                 .requestMatchers(HttpMethod.GET, "/product").permitAll()
                 .requestMatchers("/product").hasRole("ADMIN")
+                // RequestMatchers for weborder controller
+                .requestMatchers("/weborder/*").authenticated()
+                .requestMatchers("/weborder/admin/*").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/weborder").hasRole("ADMIN")
                 .anyRequest().denyAll()
                 .and()
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)

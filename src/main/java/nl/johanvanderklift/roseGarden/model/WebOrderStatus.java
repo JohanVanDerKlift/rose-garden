@@ -2,9 +2,9 @@ package nl.johanvanderklift.roseGarden.model;
 
 public enum WebOrderStatus {
 
+    PENDING,
     RECEIVED,
-    IN_PROGRESS,
-    ON_ROUTE,
-    DONE
+    DELIVERING,
+    PROCESSED
 
 }

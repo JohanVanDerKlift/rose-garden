@@ -1,6 +1,6 @@
 package nl.johanvanderklift.roseGarden.exception;
 
-public class AuthorityNotFoundException extends RuntimeException{
+public class AuthorityNotFoundException extends RuntimeException {
 
     public AuthorityNotFoundException() {
     }
