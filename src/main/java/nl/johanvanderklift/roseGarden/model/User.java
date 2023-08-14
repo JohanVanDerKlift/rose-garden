@@ -41,8 +41,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WebOrder> webOrders = new ArrayList<>();
 
-
-
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "users_authorities",
             joinColumns = @JoinColumn(name = "username"),

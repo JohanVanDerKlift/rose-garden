@@ -5,7 +5,7 @@ public class WebOrderNotFoundException extends RuntimeException {
     public WebOrderNotFoundException() {
     }
 
-    public WebOrderNotFoundException(Long webOrderId) {
+    public WebOrderNotFoundException(String webOrderId) {
         super("Weborder with id " + webOrderId + " was not found.");
     }
 

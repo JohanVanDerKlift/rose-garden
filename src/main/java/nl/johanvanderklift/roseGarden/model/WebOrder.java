@@ -3,6 +3,7 @@ package nl.johanvanderklift.roseGarden.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,10 +14,14 @@ import java.util.List;
 @Entity
 @Table(name = "web_order")
 public class WebOrder {
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(generator = "web_order_gen")
+    @GenericGenerator(
+            name = "web_order_gen",
+            strategy = "nl.johanvanderklift.roseGarden.utils.CustomWebOrderIdGenerator")
     @Column(name = "id", nullable = false)
-    private Long id;
+    private String id;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "web_order_status", nullable = false)

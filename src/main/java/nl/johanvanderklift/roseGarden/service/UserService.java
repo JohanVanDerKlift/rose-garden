@@ -4,6 +4,8 @@ import nl.johanvanderklift.roseGarden.dto.AddressInputDto;
 import nl.johanvanderklift.roseGarden.dto.AddressOutputDto;
 import nl.johanvanderklift.roseGarden.dto.UserInputDto;
 import nl.johanvanderklift.roseGarden.dto.UserOutputDto;
+import nl.johanvanderklift.roseGarden.exception.AuthorityAlreadyPresentException;
+import nl.johanvanderklift.roseGarden.exception.LastAdminException;
 import nl.johanvanderklift.roseGarden.model.Address;
 import nl.johanvanderklift.roseGarden.model.Authority;
 import nl.johanvanderklift.roseGarden.model.User;
@@ -15,6 +17,7 @@ import nl.johanvanderklift.roseGarden.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,6 +62,40 @@ public class UserService {
         return user.getUsername();
     }
 
+    public String updateUser(UserInputDto dto, String username) {
+        Optional<User> opUser = userRepository.findById(username);
+        if (opUser.isEmpty()) {
+            throw new UserNotFoundException(username);
+        } else {
+            User user = opUser.get();
+            userRepository.save(transferDtoToUser(dto, user));
+            return user.getUsername();
+        }
+    }
+
+    public void removeUser(String username) {
+        Optional<User> opUser = userRepository.findById(username);
+        if (opUser.isEmpty()) {
+            throw new UserNotFoundException(username);
+        } else {
+            User user = opUser.get();
+            if (user.getAuthorities().contains(authorityRepository.findById("ROLE_ADMIN").get())) {
+                List<User> users = userRepository.findAll();
+                int count = 0;
+                for (User userToCheck : users) {
+                    if (userToCheck.getAuthorities().contains(authorityRepository.findById("ROLE_ADMIN").get())) {
+                        count += 1;
+                    }
+                }
+                if (count <= 1) {
+                    throw new LastAdminException();
+                }
+            } else {
+                userRepository.delete(user);
+            }
+        }
+    }
+
     public void addAuthorityToUser(String username, String authority) {
         Optional<User> opUser = userRepository.findById(username);
         Optional<Authority> opAuthority = authorityRepository.findById("ROLE_" + authority);
@@ -69,8 +106,12 @@ public class UserService {
         } else {
             User user = opUser.get();
             Authority auth = opAuthority.get();
-            user.addAuthority(auth);
-            userRepository.save(user);
+            if (user.getAuthorities().contains(auth)) {
+                throw new AuthorityAlreadyPresentException(auth.getAuthorityName());
+            } else {
+                user.addAuthority(auth);
+                userRepository.save(user);
+            }
         }
     }
 
@@ -79,7 +120,7 @@ public class UserService {
         Optional<Authority> opAuthority = authorityRepository.findById(authority);
         if (opUser.isEmpty()) {
             throw new UserNotFoundException(username);
-        } if (opAuthority.isEmpty()) {
+        } else if (opAuthority.isEmpty()) {
             throw new AuthorityNotFoundException(authority);
         } else {
             User user = opUser.get();

@@ -33,7 +33,7 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<UserOutputDto> getUserByEmail(@RequestParam String username) {
+    public ResponseEntity<UserOutputDto> getUserByUsername(@RequestParam String username) {
         return ResponseEntity.ok().body(userService.getUserByUsername(username));
     }
 
@@ -46,6 +46,30 @@ public class UserController {
             userService.addAuthorityToUser(username, "USER");
             return new ResponseEntity<>(username, HttpStatus.CREATED);
         }
+    }
+
+    @PutMapping
+    public ResponseEntity<String> updateUser(@Valid @RequestBody UserInputDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+        String username = userService.updateUser(dto, userDetails.getUsername());
+        return ResponseEntity.ok(username);
+    }
+
+    @PutMapping("/admin")
+    public ResponseEntity<String> updateUserAsAdmin(@Valid @RequestBody UserInputDto dto, String username) {
+        String returnUsername = userService.updateUser(dto, username);
+        return ResponseEntity.ok(returnUsername);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Object> deleteUser(@AuthenticationPrincipal UserDetails userDetails) {
+        userService.removeUser(userDetails.getUsername());
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/admin")
+    public ResponseEntity<Object> deleteUserAsAdmin(@AuthenticationPrincipal String username) {
+        userService.removeUser(username);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/auth")

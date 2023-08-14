@@ -5,7 +5,7 @@ import org.springframework.data.repository.ListCrudRepository;
 
 import java.util.List;
 
-public interface WebOrderRepository extends ListCrudRepository<WebOrder, Long> {
+public interface WebOrderRepository extends ListCrudRepository<WebOrder, String> {
     List<WebOrder> findByUser_Username(String username);
 
 }

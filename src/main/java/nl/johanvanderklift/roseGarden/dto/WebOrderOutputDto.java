@@ -7,7 +7,7 @@ import java.util.List;
 
 public class WebOrderOutputDto {
 
-    public Long id;
+    public String id;
     public String webOrderStatus;
     public Address address;
     public Double totalPriceExTax;

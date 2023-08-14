@@ -1,5 +1,6 @@
 package nl.johanvanderklift.roseGarden.dto;
 
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
@@ -10,6 +11,5 @@ public class ProductInputDto {
     @NotBlank
     public String name;
     public String description;
-    public Boolean availability;
     public Double tax;
 }

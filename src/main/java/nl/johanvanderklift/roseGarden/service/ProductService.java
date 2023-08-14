@@ -2,6 +2,7 @@ package nl.johanvanderklift.roseGarden.service;
 
 import nl.johanvanderklift.roseGarden.dto.ProductInputDto;
 import nl.johanvanderklift.roseGarden.dto.ProductOutputDto;
+import nl.johanvanderklift.roseGarden.exception.ProductNotFoundException;
 import nl.johanvanderklift.roseGarden.exception.WebOrderNotFoundException;
 import nl.johanvanderklift.roseGarden.model.Product;
 import nl.johanvanderklift.roseGarden.repository.ProductRepository;
@@ -77,7 +78,7 @@ public class ProductService {
     public void deleteProduct(Long id) {
         Optional<Product> opProduct = productRepository.findById(id);
         if (opProduct.isEmpty()) {
-            throw new WebOrderNotFoundException(id);
+            throw new ProductNotFoundException(id);
         } else {
             productRepository.delete(opProduct.get());
         }

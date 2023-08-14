@@ -4,6 +4,6 @@ public class WebOrderDetailInputDto {
 
     public Integer quantity;
     public Long productId;
-    public Long webOrderId;
+    public String webOrderId;
 
 }

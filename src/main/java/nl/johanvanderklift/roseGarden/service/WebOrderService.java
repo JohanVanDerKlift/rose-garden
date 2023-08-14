@@ -32,15 +32,6 @@ public class WebOrderService {
         this.productRepository = productRepository;
     }
 
-    public List<WebOrderOutputDto> getAllWebOrdersByUsername(UserDetails userDetails) {
-        List<WebOrder> webOrders = webOrderRepository.findByUser_Username(userDetails.getUsername());
-        List<WebOrderOutputDto> dtos = new ArrayList<>();
-        for (WebOrder webOrder : webOrders) {
-            dtos.add(transferWebOrderToDto(webOrder));
-        }
-        return dtos;
-    }
-
     public List<WebOrderOutputDto> getAllWebOrdersByUsername(String username) {
         List<WebOrder> webOrders = webOrderRepository.findByUser_Username(username);
         List<WebOrderOutputDto> dtos = new ArrayList<>();
@@ -50,7 +41,7 @@ public class WebOrderService {
         return dtos;
     }
 
-    public WebOrderOutputDto getWebOrderById(Long webOrderId) {
+    public WebOrderOutputDto getWebOrderById(String webOrderId) {
         Optional<WebOrder> opWebOrder = webOrderRepository.findById(webOrderId);
         if (opWebOrder.isEmpty()) {
             throw new WebOrderNotFoundException(webOrderId);
@@ -59,7 +50,7 @@ public class WebOrderService {
         }
     }
 
-    public WebOrderOutputDto getWebOrderById(Long webOrderId, UserDetails userDetails) {
+    public WebOrderOutputDto getWebOrderById(String webOrderId, UserDetails userDetails) {
         Optional<WebOrder> opWebOrder = webOrderRepository.findById(webOrderId);
         Optional<User> opUser = userRepository.findById(userDetails.getUsername());
         if (opWebOrder.isEmpty()) {
@@ -77,7 +68,7 @@ public class WebOrderService {
         }
     }
 
-    public Long createWebOrder(WebOrderInputDto dto, UserDetails userDetails) {
+    public String createWebOrder(WebOrderInputDto dto, UserDetails userDetails) {
         String username = userDetails.getUsername();
         User user = userRepository.findById(username).orElseThrow();
         Optional<Product> opProduct = productRepository.findById(dto.productId);
@@ -134,7 +125,7 @@ public class WebOrderService {
         return 0L;
     }
 
-    public Long confirmOrder(Long webOrderId, Long addressId, UserDetails userDetails) {
+    public String confirmOrder(String webOrderId, Long addressId, UserDetails userDetails) {
         Optional<WebOrder> opWebOrder = webOrderRepository.findById(webOrderId);
         Optional<Address> opAddress = addressRepository.findById(addressId);
          if (opWebOrder.isEmpty()) {
@@ -155,7 +146,7 @@ public class WebOrderService {
          }
     }
 
-    public String changeOrderStatus(Long webOrderId, String status) {
+    public String changeOrderStatus(String webOrderId, String status) {
         Optional<WebOrder> opWebOrder = webOrderRepository.findById(webOrderId);
         if (opWebOrder.isEmpty()) {
             throw new WebOrderNotFoundException(webOrderId);
@@ -173,7 +164,7 @@ public class WebOrderService {
         }
     }
 
-    public void deleteWebOrder(Long id) {
+    public void deleteWebOrder(String id) {
         Optional<WebOrder> opWebOrder = webOrderRepository.findById(id);
         if (opWebOrder.isEmpty()) {
             throw new WebOrderNotFoundException(id);
