@@ -38,8 +38,8 @@ public class WebOrderController {
     }
 
     @GetMapping("/{webOrderId}")
-    public ResponseEntity<WebOrderOutputDto> getWebOrderById(@PathVariable String webOrderId, @AuthenticationPrincipal UserDetails user) {
-        WebOrderOutputDto dto = webOrderService.getWebOrderById(webOrderId, user);
+    public ResponseEntity<WebOrderOutputDto> getWebOrderById(@PathVariable String webOrderId, @AuthenticationPrincipal UserDetails userDetails) {
+        WebOrderOutputDto dto = webOrderService.getWebOrderById(webOrderId, userDetails.getUsername());
         return ResponseEntity.ok(dto);
     }
 
@@ -50,11 +50,11 @@ public class WebOrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createWebOrder(@RequestBody WebOrderInputDto dto, @AuthenticationPrincipal UserDetails user, BindingResult br) {
+    public ResponseEntity<Object> createWebOrder(@RequestBody WebOrderInputDto dto, @AuthenticationPrincipal UserDetails userDetails, BindingResult br) {
         if (br.hasFieldErrors()) {
             return getBindingResult(br);
         } else {
-            String newId = webOrderService.createWebOrder(dto, user);
+            String newId = webOrderService.createWebOrder(dto, userDetails.getUsername());
             URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentRequest().path("/" + newId).toUriString());
             return ResponseEntity.created(uri).body(newId);
         }
@@ -67,8 +67,8 @@ public class WebOrderController {
     }
 
     @PatchMapping("/{webOrderId}/address/{addressId}")
-    public ResponseEntity<String> confirmWebOrder(@PathVariable String webOrderId, @PathVariable Long addressId, @AuthenticationPrincipal UserDetails user) {
-        String newId = webOrderService.confirmOrder(webOrderId, addressId, user);
+    public ResponseEntity<String> confirmWebOrder(@PathVariable String webOrderId, @PathVariable Long addressId, @AuthenticationPrincipal UserDetails userDetails) {
+        String newId = webOrderService.confirmOrder(webOrderId, addressId, userDetails.getUsername());
         return ResponseEntity.ok(newId);
     }
 

@@ -5,11 +5,12 @@ import nl.johanvanderklift.roseGarden.dto.ProductOutputDto;
 import nl.johanvanderklift.roseGarden.exception.ProductNotFoundException;
 import nl.johanvanderklift.roseGarden.model.Product;
 import nl.johanvanderklift.roseGarden.repository.ProductRepository;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -27,6 +28,8 @@ class ProductServiceTest {
     ProductService productService;
     @Mock
     ProductRepository productRepository;
+    @Captor
+    ArgumentCaptor<Product> captor;
 
     Product product1;
     Product product2;
