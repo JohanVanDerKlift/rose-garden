@@ -60,6 +60,8 @@ public class SecurityConfig {
                 .requestMatchers("/weborder/*").authenticated()
                 .requestMatchers("/weborder/admin/*").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/weborder").hasRole("ADMIN")
+                // RequestMatchers for file controller
+                .requestMatchers("/upload/pdf").authenticated()
                 .anyRequest().denyAll()
                 .and()
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
