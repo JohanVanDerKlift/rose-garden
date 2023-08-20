@@ -46,7 +46,7 @@ public class WebOrder {
     public Double getTax() {
         double tax = 0.00;
         for (WebOrderDetail webOrderDetail : this.webOrderDetails) {
-            tax += (webOrderDetail.getProduct().getPrice() / 121) * webOrderDetail.getProduct().getTax()
+            tax += (webOrderDetail.getProduct().getPrice() / (100 + webOrderDetail.getProduct().getTax())) * webOrderDetail.getProduct().getTax()
                     * webOrderDetail.getQuantity();
         }
         return Math.round(tax * 100) / 100.00;
@@ -61,7 +61,7 @@ public class WebOrder {
     }
 
     public Double getTotalPriceExTax() {
-        return (double) Math.round(getTotalPrice() - getTax());
+        return getTotalPrice() - getTax();
     }
 
 }

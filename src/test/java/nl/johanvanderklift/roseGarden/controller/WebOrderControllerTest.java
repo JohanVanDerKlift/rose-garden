@@ -47,9 +47,9 @@ class WebOrderControllerTest {
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.webOrderStatus", is("PENDING")))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.totalPriceExTax", is(20.0)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.tax", is(4.2)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.totalPrice", is(24.2)));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalPriceExTax", is(8.26)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.tax", is(0.74)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.totalPrice", is(9.0)));
     }
 
     @Test

@@ -54,8 +54,13 @@ public class SecurityConfig {
                 .requestMatchers("/authenticated").authenticated()
                 .requestMatchers("/**").authenticated()
                 // RequestMatchers for product controller
+                .requestMatchers(HttpMethod.GET, "/product/*").permitAll()
+                .requestMatchers(HttpMethod.GET, "/product/search").permitAll()
                 .requestMatchers(HttpMethod.GET, "/product").permitAll()
-                .requestMatchers("/product").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.POST, "/product").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PUT, "/product/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.PATCH, "/product/{id}").hasRole("ADMIN")
+                .requestMatchers(HttpMethod.DELETE, "/product/{id}").hasRole("ADMIN")
                 // RequestMatchers for weborder controller
                 .requestMatchers("/weborder/*").authenticated()
                 .requestMatchers("/weborder/admin/*").hasRole("ADMIN")
