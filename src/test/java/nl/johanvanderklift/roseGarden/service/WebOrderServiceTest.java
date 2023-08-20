@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -209,6 +208,7 @@ class WebOrderServiceTest {
     }
 
     @Test
+    @DisplayName("Should return correct order id when confirming webOrder")
     void confirmOrder() {
         user1.setAddresses(List.of(address));
         when(webOrderRepository.findById("2023-ORD-00001")).thenReturn(Optional.of(webOrder1));
@@ -222,6 +222,7 @@ class WebOrderServiceTest {
     }
 
     @Test
+    @DisplayName("Should return correct webOrderStatus when changing the status of webOrder")
     void changeOrderStatus() {
         when(webOrderRepository.findById("2023-ORD-00001")).thenReturn(Optional.of(webOrder1));
 
@@ -235,6 +236,7 @@ class WebOrderServiceTest {
     }
 
     @Test
+    @DisplayName("Should verify delete WebOrder")
     void deleteWebOrder() {
         when(webOrderRepository.findById(webOrder1.getId())).thenReturn(Optional.of(webOrder1));
 

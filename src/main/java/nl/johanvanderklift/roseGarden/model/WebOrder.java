@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
+import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,13 +42,14 @@ public class WebOrder {
     @Column(name = "order_date_time")
     private LocalDateTime orderDateTime;
 
+
     public Double getTax() {
         double tax = 0.00;
         for (WebOrderDetail webOrderDetail : this.webOrderDetails) {
-            tax += (webOrderDetail.getProduct().getPrice() * ((webOrderDetail.getProduct().getTax() / 100)))
+            tax += (webOrderDetail.getProduct().getPrice() / 121) * webOrderDetail.getProduct().getTax()
                     * webOrderDetail.getQuantity();
         }
-        return tax;
+        return Math.round(tax * 100) / 100.00;
     }
 
     public Double getTotalPrice() {
@@ -59,7 +61,7 @@ public class WebOrder {
     }
 
     public Double getTotalPriceExTax() {
-        return getTotalPrice() - getTax();
+        return (double) Math.round(getTotalPrice() - getTax());
     }
 
 }

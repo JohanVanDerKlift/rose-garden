@@ -14,7 +14,7 @@ import lombok.Setter;
 public class WebOrderDetail {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
 
