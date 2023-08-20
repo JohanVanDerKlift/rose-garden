@@ -61,7 +61,9 @@ public class SecurityConfig {
                 .requestMatchers("/weborder/admin/*").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/weborder").hasRole("ADMIN")
                 // RequestMatchers for file controller
-                .requestMatchers("/upload/pdf").authenticated()
+                .requestMatchers("/upload/pdf/*").authenticated()
+                .requestMatchers("/download/*").authenticated()
+                .requestMatchers("/file/delete/*").authenticated()
                 .anyRequest().denyAll()
                 .and()
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)

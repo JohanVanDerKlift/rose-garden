@@ -17,7 +17,6 @@ import nl.johanvanderklift.roseGarden.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,6 +69,17 @@ public class UserService {
             User user = opUser.get();
             userRepository.save(transferDtoToUser(dto, user));
             return user.getUsername();
+        }
+    }
+
+    public void toggleHasCredit(String username) {
+        Optional<User> opUser = userRepository.findById(username);
+        if (opUser.isEmpty()) {
+            throw new UserNotFoundException(username);
+        } else {
+            User user = opUser.get();
+            user.setHasCredit(!user.getHasCredit());
+            userRepository.save(user);
         }
     }
 
@@ -167,6 +177,7 @@ public class UserService {
         dto.phoneNumber = user.getPhoneNumber();
         dto.hasCredit = user.getHasCredit();
         dto.authorities.addAll(user.getAuthorities());
+        dto.addresses.addAll(user.getAddresses());
         return dto;
     }
 
@@ -178,6 +189,7 @@ public class UserService {
         user.setLastName(dto.lastName);
         user.setCompanyName(dto.companyName);
         user.setPhoneNumber(dto.phoneNumber);
+        user.setHasCredit(false);
         return user;
     }
 }

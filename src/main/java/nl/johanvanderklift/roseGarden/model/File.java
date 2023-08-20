@@ -1,9 +1,6 @@
 package nl.johanvanderklift.roseGarden.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,5 +15,9 @@ public class File {
     private String filename;
     @Lob
     private byte[] docFile;
+
+    @OneToOne
+    @JoinColumn(name = "user_username")
+    private User user;
 
 }

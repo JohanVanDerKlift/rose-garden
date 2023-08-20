@@ -1,9 +1,10 @@
 package nl.johanvanderklift.roseGarden.dto;
 
+import nl.johanvanderklift.roseGarden.model.Address;
 import nl.johanvanderklift.roseGarden.model.Authority;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 public class UserOutputDto {
 
@@ -15,6 +16,7 @@ public class UserOutputDto {
     public String companyName;
     public String phoneNumber;
     public Boolean hasCredit;
-    public Collection<Authority> authorities = new ArrayList<>();
+    public List<Authority> authorities = new ArrayList<>();
+    public List<Address> addresses = new ArrayList<>();
 
 }

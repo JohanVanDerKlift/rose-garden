@@ -18,3 +18,9 @@ VALUES ('Testerstreet 1', null, 'Testerton', '1234 AB', 'tester'),
 INSERT INTO product (id, availability, description, name, price, tax)
 VALUES ('1', 'true', 'Description of test product', 'Test product', '15.25', '21.0'),
        ('2', 'true', 'Description of test2 product', 'Test2 product', '16.75', '9.0');
+
+INSERT INTO web_order (id, order_date_time, web_order_status, address_id, username)
+VALUES ('1', '2023-08-19T14:18:22.330552', 'PENDING', '1', 'tester');
+
+INSERT INTO web_order_detail (id, quantity, product_id, web_order_id)
+VALUES ('1', '2', '1', '1');
