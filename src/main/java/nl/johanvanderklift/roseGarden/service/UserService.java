@@ -4,13 +4,10 @@ import nl.johanvanderklift.roseGarden.dto.AddressInputDto;
 import nl.johanvanderklift.roseGarden.dto.AddressOutputDto;
 import nl.johanvanderklift.roseGarden.dto.UserInputDto;
 import nl.johanvanderklift.roseGarden.dto.UserOutputDto;
-import nl.johanvanderklift.roseGarden.exception.AuthorityAlreadyPresentException;
-import nl.johanvanderklift.roseGarden.exception.LastAdminException;
+import nl.johanvanderklift.roseGarden.exception.*;
 import nl.johanvanderklift.roseGarden.model.Address;
 import nl.johanvanderklift.roseGarden.model.Authority;
 import nl.johanvanderklift.roseGarden.model.User;
-import nl.johanvanderklift.roseGarden.exception.AuthorityNotFoundException;
-import nl.johanvanderklift.roseGarden.exception.UserNotFoundException;
 import nl.johanvanderklift.roseGarden.repository.AddressRepository;
 import nl.johanvanderklift.roseGarden.repository.AuthorityRepository;
 import nl.johanvanderklift.roseGarden.repository.UserRepository;
@@ -127,7 +124,7 @@ public class UserService {
 
     public void removeAuthority(String username, String authority) {
         Optional<User> opUser = userRepository.findById(username);
-        Optional<Authority> opAuthority = authorityRepository.findById(authority);
+        Optional<Authority> opAuthority = authorityRepository.findById("ROLE_" + authority);
         if (opUser.isEmpty()) {
             throw new UserNotFoundException(username);
         } else if (opAuthority.isEmpty()) {
@@ -164,6 +161,15 @@ public class UserService {
         address.setUser(user);
         addressRepository.save(address);
         return address.getId();
+    }
+
+    public void deleteAddressFromUser(Long id) {
+        Optional<Address> opAddress = addressRepository.findById(id);
+        if (opAddress.isEmpty()) {
+            throw new AddressNotFoundException("Address with id " + id + "was not found");
+        } else {
+            addressRepository.deleteById(id);
+        }
     }
 
     private UserOutputDto transferUserToDto(User user) {

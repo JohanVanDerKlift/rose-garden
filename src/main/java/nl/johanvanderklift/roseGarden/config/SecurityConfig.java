@@ -39,22 +39,20 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
                 .httpBasic().disable()
                 .cors()
                 .and()
                 .authorizeHttpRequests()
                 // requestMatchers for user and authentication controller
                 .requestMatchers(HttpMethod.POST, "/authenticate", "/user").permitAll()
-                .requestMatchers("/user/auth", "/user/admin").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.POST, "/user/address").authenticated()
+                .requestMatchers("/user/auth", "/user/admin/{username}").hasRole("ADMIN")
+                .requestMatchers("/user/address", "/user/address/{id}").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/user").authenticated()
                 .requestMatchers(HttpMethod.DELETE, "/user").authenticated()
                 .requestMatchers(HttpMethod.GET, "/user", "/user/search").hasRole("ADMIN")
                 .requestMatchers("/authenticated").authenticated()
-                .requestMatchers("/**").authenticated()
                 // RequestMatchers for product controller
-                .requestMatchers(HttpMethod.GET, "/product/*").permitAll()
+                .requestMatchers(HttpMethod.GET, "/product/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/product/search").permitAll()
                 .requestMatchers(HttpMethod.GET, "/product").permitAll()
                 .requestMatchers(HttpMethod.POST, "/product").hasRole("ADMIN")
@@ -66,11 +64,12 @@ public class SecurityConfig {
                 .requestMatchers("/weborder/admin/*").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/weborder").hasRole("ADMIN")
                 // RequestMatchers for file controller
-                .requestMatchers("/upload/pdf/*").authenticated()
+                .requestMatchers("/upload/pdf/**").authenticated()
                 .requestMatchers("/download/*").authenticated()
-                .requestMatchers("/file/delete/*").authenticated()
+                .requestMatchers("/file/delete/**").authenticated()
                 .anyRequest().denyAll()
                 .and()
+                .csrf().disable()
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 

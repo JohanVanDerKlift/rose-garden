@@ -47,7 +47,7 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "authority_name"))
     private Collection<Authority> authorities = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = {CascadeType.REMOVE, CascadeType.DETACH}, orphanRemoval = true)
     private List<Address> addresses = new ArrayList<>();
 
     @OneToOne(mappedBy = "user", orphanRemoval = true)
