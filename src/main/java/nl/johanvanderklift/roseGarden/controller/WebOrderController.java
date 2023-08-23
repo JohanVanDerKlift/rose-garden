@@ -72,13 +72,13 @@ public class WebOrderController {
         return ResponseEntity.ok(newId);
     }
 
-    @PatchMapping("/{webOrderId}")
+    @PatchMapping("/admin/{webOrderId}")
     public ResponseEntity<String> changeWebOrderStatus(@PathVariable String webOrderId, @RequestParam String webOrderStatus) {
         String newWebOrderStatus = webOrderService.changeOrderStatus(webOrderId, webOrderStatus);
         return ResponseEntity.ok(newWebOrderStatus);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     public ResponseEntity<Object> deleteWebOrder(@PathVariable String id) {
         webOrderService.deleteWebOrder(id);
         return ResponseEntity.ok().build();

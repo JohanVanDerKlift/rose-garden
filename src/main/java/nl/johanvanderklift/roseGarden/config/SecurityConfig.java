@@ -60,9 +60,11 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.PATCH, "/product/{id}").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.DELETE, "/product/{id}").hasRole("ADMIN")
                 // RequestMatchers for weborder controller
-                .requestMatchers("/weborder/*").authenticated()
-                .requestMatchers("/weborder/admin/*").hasRole("ADMIN")
-                .requestMatchers(HttpMethod.DELETE, "/weborder").hasRole("ADMIN")
+                .requestMatchers("/weborder").authenticated()
+                .requestMatchers("/weborder/{webOderId}").authenticated()
+                .requestMatchers("weborder/{webOrderId}/address/{addressId}").authenticated()
+                .requestMatchers("/weborder/admin").hasRole("ADMIN")
+                .requestMatchers("/weborder/admin/{webOrderId}").hasRole("ADMIN")
                 // RequestMatchers for file controller
                 .requestMatchers("/upload/pdf/**").authenticated()
                 .requestMatchers("/download/*").authenticated()
