@@ -4,20 +4,16 @@ import nl.johanvanderklift.roseGarden.dto.AddressInputDto;
 import nl.johanvanderklift.roseGarden.dto.AddressOutputDto;
 import nl.johanvanderklift.roseGarden.dto.UserInputDto;
 import nl.johanvanderklift.roseGarden.dto.UserOutputDto;
-import nl.johanvanderklift.roseGarden.exception.AuthorityAlreadyPresentException;
-import nl.johanvanderklift.roseGarden.exception.LastAdminException;
+import nl.johanvanderklift.roseGarden.exception.*;
 import nl.johanvanderklift.roseGarden.model.Address;
 import nl.johanvanderklift.roseGarden.model.Authority;
 import nl.johanvanderklift.roseGarden.model.User;
-import nl.johanvanderklift.roseGarden.exception.AuthorityNotFoundException;
-import nl.johanvanderklift.roseGarden.exception.UserNotFoundException;
 import nl.johanvanderklift.roseGarden.repository.AddressRepository;
 import nl.johanvanderklift.roseGarden.repository.AuthorityRepository;
 import nl.johanvanderklift.roseGarden.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +69,17 @@ public class UserService {
         }
     }
 
+    public void toggleHasCredit(String username) {
+        Optional<User> opUser = userRepository.findById(username);
+        if (opUser.isEmpty()) {
+            throw new UserNotFoundException(username);
+        } else {
+            User user = opUser.get();
+            user.setHasCredit(!user.getHasCredit());
+            userRepository.save(user);
+        }
+    }
+
     public void removeUser(String username) {
         Optional<User> opUser = userRepository.findById(username);
         if (opUser.isEmpty()) {
@@ -117,7 +124,7 @@ public class UserService {
 
     public void removeAuthority(String username, String authority) {
         Optional<User> opUser = userRepository.findById(username);
-        Optional<Authority> opAuthority = authorityRepository.findById(authority);
+        Optional<Authority> opAuthority = authorityRepository.findById("ROLE_" + authority);
         if (opUser.isEmpty()) {
             throw new UserNotFoundException(username);
         } else if (opAuthority.isEmpty()) {
@@ -156,6 +163,15 @@ public class UserService {
         return address.getId();
     }
 
+    public void deleteAddressFromUser(Long id) {
+        Optional<Address> opAddress = addressRepository.findById(id);
+        if (opAddress.isEmpty()) {
+            throw new AddressNotFoundException("Address with id " + id + "was not found");
+        } else {
+            addressRepository.deleteById(id);
+        }
+    }
+
     private UserOutputDto transferUserToDto(User user) {
         UserOutputDto dto = new UserOutputDto();
         dto.username = user.getUsername();
@@ -167,6 +183,7 @@ public class UserService {
         dto.phoneNumber = user.getPhoneNumber();
         dto.hasCredit = user.getHasCredit();
         dto.authorities.addAll(user.getAuthorities());
+        dto.addresses.addAll(user.getAddresses());
         return dto;
     }
 
@@ -178,6 +195,7 @@ public class UserService {
         user.setLastName(dto.lastName);
         user.setCompanyName(dto.companyName);
         user.setPhoneNumber(dto.phoneNumber);
+        user.setHasCredit(false);
         return user;
     }
 }

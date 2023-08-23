@@ -41,13 +41,14 @@ public class WebOrder {
     @Column(name = "order_date_time")
     private LocalDateTime orderDateTime;
 
+
     public Double getTax() {
         double tax = 0.00;
         for (WebOrderDetail webOrderDetail : this.webOrderDetails) {
-            tax += (webOrderDetail.getProduct().getPrice() * ((webOrderDetail.getProduct().getTax() / 100)))
+            tax += (webOrderDetail.getProduct().getPrice() / (100 + webOrderDetail.getProduct().getTax())) * webOrderDetail.getProduct().getTax()
                     * webOrderDetail.getQuantity();
         }
-        return tax;
+        return Math.round(tax * 100) / 100.00;
     }
 
     public Double getTotalPrice() {

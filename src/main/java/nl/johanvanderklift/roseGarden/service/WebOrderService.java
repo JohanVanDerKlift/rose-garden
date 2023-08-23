@@ -6,7 +6,6 @@ import nl.johanvanderklift.roseGarden.dto.WebOrderOutputDto;
 import nl.johanvanderklift.roseGarden.exception.*;
 import nl.johanvanderklift.roseGarden.model.*;
 import nl.johanvanderklift.roseGarden.repository.*;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -50,13 +49,13 @@ public class WebOrderService {
         }
     }
 
-    public WebOrderOutputDto getWebOrderById(String webOrderId, UserDetails userDetails) {
+    public WebOrderOutputDto getWebOrderById(String webOrderId, String username) {
         Optional<WebOrder> opWebOrder = webOrderRepository.findById(webOrderId);
-        Optional<User> opUser = userRepository.findById(userDetails.getUsername());
+        Optional<User> opUser = userRepository.findById(username);
         if (opWebOrder.isEmpty()) {
             throw new WebOrderNotFoundException(webOrderId);
         } else if (opUser.isEmpty()) {
-            throw new UserNotFoundException(userDetails.getUsername());
+            throw new UserNotFoundException(username);
         } else {
             WebOrder webOrder = opWebOrder.get();
             User user = opUser.get();
@@ -68,8 +67,7 @@ public class WebOrderService {
         }
     }
 
-    public String createWebOrder(WebOrderInputDto dto, UserDetails userDetails) {
-        String username = userDetails.getUsername();
+    public String createWebOrder(WebOrderInputDto dto, String username) {
         User user = userRepository.findById(username).orElseThrow();
         Optional<Product> opProduct = productRepository.findById(dto.productId);
         if (opProduct.isEmpty()) {
@@ -79,13 +77,13 @@ public class WebOrderService {
             WebOrder webOrder = new WebOrder();
             webOrder.setWebOrderStatus(WebOrderStatus.PENDING);
             webOrder.setUser(user);
-            webOrderRepository.save(webOrder);
+            WebOrder newWebOrder = webOrderRepository.save(webOrder);
             WebOrderDetail webOrderDetail = new WebOrderDetail();
             webOrderDetail.setQuantity(dto.quantity);
             webOrderDetail.setProduct(product);
-            webOrderDetail.setWebOrder(webOrder);
+            webOrderDetail.setWebOrder(newWebOrder);
             webOrderDetailRepository.save(webOrderDetail);
-            return webOrder.getId();
+            return newWebOrder.getId();
         }
     }
 
@@ -100,32 +98,31 @@ public class WebOrderService {
             WebOrder webOrder = opWebOrder.get();
             Product product = opProduct.get();
             List<WebOrderDetail> webOrderDetails = webOrder.getWebOrderDetails();
-            boolean isPresent = false;
             for (WebOrderDetail webOrderDetail : webOrderDetails) {
                 if (webOrderDetail.getProduct() == product) {
-                    isPresent = true;
                     if (webOrderDetail.getQuantity() + dto.quantity <= 0){
                         webOrderDetailRepository.delete(webOrderDetail);
+                        return 0L;
                     } else {
                         webOrderDetail.setQuantity(webOrderDetail.getQuantity() + dto.quantity);
-                        webOrderDetailRepository.save(webOrderDetail);
-                        return webOrderDetail.getId();
+                        WebOrderDetail newWebOrderDetail = webOrderDetailRepository.save(webOrderDetail);
+                        return newWebOrderDetail.getId();
                     }
                 }
             }
-            if (!isPresent && dto.quantity < 0) {
+            if (dto.quantity > 0) {
                 WebOrderDetail webOrderDetail = new WebOrderDetail();
                 webOrderDetail.setQuantity(dto.quantity);
                 webOrderDetail.setProduct(product);
                 webOrderDetail.setWebOrder(webOrder);
-                webOrderDetailRepository.save(webOrderDetail);
-                return webOrderDetail.getId();
+                WebOrderDetail newWebOrderDetail = webOrderDetailRepository.save(webOrderDetail);
+                return newWebOrderDetail.getId();
             }
         }
-        return 0L;
+        throw new WebOrderDetailException("WebOrderDetail was not saved.");
     }
 
-    public String confirmOrder(String webOrderId, Long addressId, UserDetails userDetails) {
+    public String confirmOrder(String webOrderId, Long addressId, String username) {
         Optional<WebOrder> opWebOrder = webOrderRepository.findById(webOrderId);
         Optional<Address> opAddress = addressRepository.findById(addressId);
          if (opWebOrder.isEmpty()) {
@@ -134,15 +131,15 @@ public class WebOrderService {
              throw new AddressNotFoundException("Address with id " + addressId + " was not found");
          } else {
              Address address = opAddress.get();
-             if (!addressRepository.findByUser_UsernameOrderByIdAsc(userDetails.getUsername()).contains(address)) {
+             if (!addressRepository.findByUser_UsernameOrderByIdAsc(username).contains(address)) {
                  throw new AddressNotFoundException("Address does not belong to current user.");
              }
              WebOrder webOrder = opWebOrder.get();
              webOrder.setAddress(address);
              webOrder.setOrderDateTime(LocalDateTime.now());
              webOrder.setWebOrderStatus(WebOrderStatus.RECEIVED);
-             webOrderRepository.save(webOrder);
-             return webOrder.getId();
+             WebOrder newWebOrder = webOrderRepository.save(webOrder);
+             return newWebOrder.getId();
          }
     }
 
@@ -159,7 +156,7 @@ public class WebOrderService {
             } else {
                 throw new WebOrderStatusException("Invalid status.");
             }
-            webOrderRepository.save(webOrder);
+           webOrderRepository.save(webOrder);
             return webOrder.getWebOrderStatus().toString();
         }
     }

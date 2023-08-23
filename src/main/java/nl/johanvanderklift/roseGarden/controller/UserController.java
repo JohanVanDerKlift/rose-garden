@@ -49,13 +49,13 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<String> updateUser(@Valid @RequestBody UserInputDto dto, @AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<String> updateUser(@RequestBody UserInputDto dto, @AuthenticationPrincipal UserDetails userDetails) {
         String username = userService.updateUser(dto, userDetails.getUsername());
         return ResponseEntity.ok(username);
     }
 
-    @PutMapping("/admin")
-    public ResponseEntity<String> updateUserAsAdmin(@Valid @RequestBody UserInputDto dto, String username) {
+    @PutMapping("/admin/{username}")
+    public ResponseEntity<String> updateUserAsAdmin(@RequestBody UserInputDto dto, @PathVariable String username) {
         String returnUsername = userService.updateUser(dto, username);
         return ResponseEntity.ok(returnUsername);
     }
@@ -67,7 +67,7 @@ public class UserController {
     }
 
     @DeleteMapping("/admin")
-    public ResponseEntity<Object> deleteUserAsAdmin(@AuthenticationPrincipal String username) {
+    public ResponseEntity<Object> deleteUserAsAdmin(@RequestParam String username) {
         userService.removeUser(username);
         return ResponseEntity.ok().build();
     }
@@ -93,6 +93,12 @@ public class UserController {
     public ResponseEntity<Long> AddAddressToUser(@Valid @RequestBody AddressInputDto dto, @AuthenticationPrincipal UserDetails user) {
         Long addressId = userService.addAddressToUser(dto, user);
         return ResponseEntity.ok(addressId);
+    }
+
+    @DeleteMapping("/address/{id}")
+    public ResponseEntity<?> deleteAddress(@PathVariable Long id) {
+        userService.deleteAddressFromUser(id);
+        return ResponseEntity.ok().build();
     }
 
     private String getBindingResult(BindingResult br) {

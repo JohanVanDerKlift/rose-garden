@@ -36,7 +36,7 @@ public class User {
     private String phoneNumber;
 
     @Column(name = "has_credit", nullable = false)
-    private Boolean hasCredit = false;
+    private Boolean hasCredit;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<WebOrder> webOrders = new ArrayList<>();
@@ -47,8 +47,11 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "authority_name"))
     private Collection<Authority> authorities = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = {CascadeType.REMOVE, CascadeType.DETACH}, orphanRemoval = true)
     private List<Address> addresses = new ArrayList<>();
+
+    @OneToOne(mappedBy = "user", orphanRemoval = true)
+    private File file;
 
     public void addAuthority(Authority authority) {
         this.authorities.add(authority);

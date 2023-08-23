@@ -31,12 +31,13 @@ public class ProductService {
     }
 
     public ProductOutputDto getProductById(Long id) {
-        Optional<Product> opProduct= productRepository.findById(id);
-        if (opProduct.isPresent()) {
+        Optional<Product> opProduct = productRepository.findById(id);
+        if (opProduct.isEmpty()) {
+            throw new ProductNotFoundException(id);
+        } else {
             Product product = opProduct.get();
             return transferProductToDto(product);
         }
-        return null;
     }
 
     public List<ProductOutputDto> getProductByNameContains(String name) {
@@ -56,23 +57,25 @@ public class ProductService {
 
     public ProductOutputDto updateProduct(ProductInputDto dto, Long id) {
         Optional<Product> opProduct= productRepository.findById(id);
-        if (opProduct.isPresent()) {
+        if (opProduct.isEmpty()) {
+            throw new ProductNotFoundException(id);
+        } else {
             Product product = opProduct.get();
             Product newProduct = productRepository.save(tranferDtoToProduct(dto, product));
             return transferProductToDto(newProduct);
         }
-        return null;
     }
 
     public ProductOutputDto toggleAvailability(Long id) {
         Optional<Product> opProduct= productRepository.findById(id);
-        if (opProduct.isPresent()) {
+        if (opProduct.isEmpty()) {
+            throw new ProductNotFoundException(id);
+        } else {
             Product product = opProduct.get();
             product.setAvailability(!product.getAvailability());
             productRepository.save(product);
             return transferProductToDto(product);
         }
-        return null;
     }
 
     public void deleteProduct(Long id) {
@@ -84,7 +87,7 @@ public class ProductService {
         }
     }
 
-    private ProductOutputDto transferProductToDto(Product product) {
+    public ProductOutputDto transferProductToDto(Product product) {
         ProductOutputDto dto = new ProductOutputDto();
         dto.id = product.getId();
         dto.name = product.getName();
@@ -95,7 +98,7 @@ public class ProductService {
         return dto;
     }
 
-    private Product tranferDtoToProduct(ProductInputDto dto, Product product) {
+    public Product tranferDtoToProduct(ProductInputDto dto, Product product) {
         product.setName(dto.name);
         product.setDescription(dto.description);
         product.setPrice(dto.price);
