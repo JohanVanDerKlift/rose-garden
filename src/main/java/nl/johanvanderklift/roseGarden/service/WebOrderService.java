@@ -74,6 +74,9 @@ public class WebOrderService {
             throw new ProductNotFoundException(dto.productId);
         } else {
             Product product = opProduct.get();
+            if (!product.getAvailability()) {
+                throw new ProductUnavailableException(product.getName());
+            }
             WebOrder webOrder = new WebOrder();
             webOrder.setWebOrderStatus(WebOrderStatus.PENDING);
             webOrder.setUser(user);
@@ -97,6 +100,9 @@ public class WebOrderService {
         } else {
             WebOrder webOrder = opWebOrder.get();
             Product product = opProduct.get();
+            if (!product.getAvailability()) {
+                throw new ProductUnavailableException(product.getName());
+            }
             List<WebOrderDetail> webOrderDetails = webOrder.getWebOrderDetails();
             for (WebOrderDetail webOrderDetail : webOrderDetails) {
                 if (webOrderDetail.getProduct() == product) {

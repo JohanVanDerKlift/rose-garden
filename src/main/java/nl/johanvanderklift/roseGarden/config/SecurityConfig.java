@@ -45,7 +45,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 // requestMatchers for user and authentication controller
                 .requestMatchers(HttpMethod.POST, "/authenticate", "/user").permitAll()
-                .requestMatchers("/user/auth", "/user/admin/{username}").hasRole("ADMIN")
+                .requestMatchers("/user/auth", "/user/admin", "/user/admin/{username}").hasRole("ADMIN")
                 .requestMatchers("/user/address", "/user/address/{id}").authenticated()
                 .requestMatchers(HttpMethod.PUT, "/user").authenticated()
                 .requestMatchers(HttpMethod.DELETE, "/user").authenticated()
@@ -66,9 +66,9 @@ public class SecurityConfig {
                 .requestMatchers("/weborder/admin").hasRole("ADMIN")
                 .requestMatchers("/weborder/admin/{webOrderId}").hasRole("ADMIN")
                 // RequestMatchers for file controller
-                .requestMatchers("/upload/pdf/**").authenticated()
-                .requestMatchers("/download/*").authenticated()
-                .requestMatchers("/file/delete/**").authenticated()
+                .requestMatchers("/upload/pdf/{username}").authenticated()
+                .requestMatchers("/download/{id}").authenticated()
+                .requestMatchers("/file/delete/{id}").authenticated()
                 .anyRequest().denyAll()
                 .and()
                 .csrf().disable()
