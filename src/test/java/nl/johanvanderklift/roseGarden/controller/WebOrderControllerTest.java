@@ -30,7 +30,7 @@ class WebOrderControllerTest {
 
     @Test
     @DisplayName("Should get all WebOrders from username performed by ROLE_ADMIN")
-    @WithUserDetails("tester2")
+    @WithUserDetails("admin")
     void testGetAllWebOrdersByUsername() throws Exception {
         mockMvc.perform(
                 get("/weborder/admin?username=tester")
@@ -40,10 +40,11 @@ class WebOrderControllerTest {
     }
 
     @Test
+    @DisplayName("Should get correct WebOrder")
     @WithUserDetails("tester")
     void getWebOrderById() throws Exception {
         mockMvc
-                .perform(MockMvcRequestBuilders.get("/weborder/1"))
+                .perform(MockMvcRequestBuilders.get("/weborder/2023-ORD-10000"))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.webOrderStatus", is("PENDING")))

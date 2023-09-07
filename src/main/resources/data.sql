@@ -3,7 +3,7 @@ VALUES ('ROLE_USER'), ('ROLE_ADMIN');
 
 INSERT INTO users (username, company_name, email, first_name, has_credit, last_name, password, phone_number)
 VALUES ('admin', 'admin', 'admin@admin.com', 'admin', 'false', 'admin', '$2y$10$dDTdrb7fdYZE/TX8L4i5nOWSK.eYgvIqpJG2gPkisADkJ8A6HkW5a', 'admin'),
-       ('tester', 'testcompanyname', 'test@test.nl', 'testname', 'false', 'testlastname', '$2a$10$DkY.h9MDU5Wk4.DPbWCEzOPKSUrIdmE3dmAefKzWeUS9hQcct6.Ba', '0101234567');
+       ('tester', 'testcompanyname', 'test@test.nl', 'testname', 'false', 'testlastname', '$2y$10$DZGkSyQpzn0TVkcOQcV80e0.lJzQi4Hq9ZcxZ7bvnUE0A8x2xahvq', '0101234567');
 
 INSERT INTO users_authorities (username, authority_name)
 VALUES  ('admin', 'ROLE_USER'),
@@ -58,3 +58,9 @@ VALUES ('1', '9', 'true', 'Kleine loempia', '', '4.50'),
        ('201', '21', 'true', 'Coca cola', 'Blik 330ml', '2.50'),
        ('202', '21', 'true', 'Sisi orange', 'Blik 330ml', '2.50'),
        ('203', '21', 'true', 'Heineken', 'Blik 330ml (Alcohol houdend product 18+)', '3.50');
+
+INSERT INTO web_order (id, order_date_time, web_order_status, address_id, username)
+VALUES ('2023-ORD-10000', '2023-08-19T14:18:22.330552', 'PENDING', '1', 'tester');
+
+INSERT INTO web_order_detail (id, quantity, product_id, web_order_id)
+VALUES ('10', '2', '1', '2023-ORD-10000');
