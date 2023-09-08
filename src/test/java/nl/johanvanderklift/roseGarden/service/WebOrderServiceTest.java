@@ -54,9 +54,11 @@ class WebOrderServiceTest {
     void setUp() {
         product1.setName("Test product 1");
         product1.setPrice(10.0);
+        product1.setAvailability(true);
 
         product2.setName("Test product 2");
         product2.setPrice(20.0);
+        product2.setAvailability(true);
 
         user1.setUsername("Testusername");
         user1.setEmail("test@test.nl");
@@ -295,5 +297,14 @@ class WebOrderServiceTest {
                 () -> webOrderService.changeOrderStatus(webOrder2.getId(), ""));
         assertThrows(WebOrderNotFoundException.class,
                 () -> webOrderService.deleteWebOrder(webOrder1.getId()));
+
+        product1.setAvailability(false);
+        product2.setAvailability(false);
+        webOrderDto.productId = 2L;
+
+        assertThrows(ProductUnavailableException.class,
+                () -> webOrderService.createWebOrder(webOrderDto, user2.getUsername()));
+        assertThrows(ProductUnavailableException.class,
+                () -> webOrderService.addWebOrderDetailToWebOrder(webOrderDetailInputDto));
     }
 }
